@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script language="JavaScript">
+    $(document).ready(function(){
+        $('#domain').keydown(function(key){
+            if(key.keyCode == 13) {
+                search();
+            }
+        });
+
+        $('#type').on("change", function(){
+            search();
+        });
+    });
+    
+    function isEmpty(obj){
+        return Object.keys(obj).length === 0;
+    }
+	function search(){
+        $.ajax({
+            type:"POST",
+            url:"test.php",
+            dataType:"text",
+            data:{
+               domain : $("#domain").val(),
+               type : $("#type").val()
+            },
+            success:function(data){
+                var data = JSON.parse(data);
+                var whois = data.whois.whois;
+                var nslookup = data.nslookup;
+                var ip = data.ip;
+
+                var whois_content = "";
+                var nslookup_content = "";
+                
+                if (nslookup.length>0) {
+                    nslookup_content += "<b>host</b> : " + nslookup[0].host + "</br>";
+                    nslookup_content += "<b>ip</b> : " + ip + "</br>";
+                    nslookup.forEach(function(element, idx){
+                        nslookup_content += "<b>target"+idx+"</b> : " + element.target + "</br>";
+                    });
+                } 
+                else {
+                    nslookup_content = "<b>찾을 수 없습니다.</b>";
+                }
+
+                if (!isEmpty(whois)&&whois.krdomain.error===undefined) {
+                    whois_content += "<b>주소</b> : " + whois.krdomain.addr + "</br>";
+                    whois_content += "<b>관리자 이메일</b> : " + whois.krdomain.adminEmail + "</br>";
+                    whois_content += "<b>관리자 이름</b> : " + whois.krdomain.adminName + "</br>";
+                    whois_content += "<b>관리자 번호</b> : " + whois.krdomain.adminPhone + "</br>";
+                    whois_content += "<b>에이전시</b> : " + whois.krdomain.agency + "</br>";
+                    whois_content += "<b>에이전시URL</b> : " + whois.krdomain.agency_url + "</br>";
+                    whois_content += "<b>우편번호</b> : " + whois.krdomain.post + "</br>";
+                    whois_content += "<b>등록일</b> : " + whois.krdomain.regDate + "</br>";
+                    whois_content += "<b>최근정보변경일</b> : " + whois.krdomain.lastUpdatedDate + "</br>";
+                    whois_content += "<b>사용종료일</b> : " + whois.krdomain.endDate + "</br>";
+                    whois_content += "<b>정보공개여부</b> : " + whois.krdomain.infoYN + "</br>";
+                    whois_content += "<b>등록대행자</b> : " + whois.krdomain.regName + "</br>";
+                    whois_content += "<b>DNSSEC</b> : " + whois.krdomain.dnssec + "</br>";
+                    whois_content += "<b>등록정보보호</b> : " + whois.krdomain.domainStatus[0] + "</br>";
+                    whois_content += "<b>등록정보보호</b> : " + whois.krdomain.domainStatus[1] +
+ "</br>";
+                    whois_content += "<b>등록정보보호</b> : " + whois.krdomain.domainStatus[2] +
+ "</br>";
+                }
+                else {
+                    whois_content = "<b>조회한 인터넷주소가 옳바르지 않거나 한국인터넷진흥원이 아닌 다른 해외 기관에서 관리하고 있어 Whois에서 찾을 수 없습니다.</b>";
+                }
+            
+
+                $("#whois").empty().append(whois_content);
+                $("#nslookup").empty().append(nslookup_content);
+
+                $('#result').css("display","block");
+            },
+            error:function(a,b,c){
+                console.log(a+b+c);
+            }
+        });
+	}
+    </script>
+</head>
+<body>
+    <div>
+        <div style="float:left;">
+            <h1>도메인</h1>
+            <input id="domain" type="text"/>
+        </div>
+        <div style="float:left;margin-left:100px">
+            <h1>타입</h1>
+            <select id="type">
+	            <option value="mx">MX</option>
+	            <option value="ns">NS</option>
+            </select>
+            <!--button type="button" onclick="search()">search</button-->
+        </div>
+    </div>
+    </br></br></br></br>
+
+    <div id="result" style="display:none;margin-top:100px;">
+        <h2>결과</h2>
+        <div id="nslookup">
+        
+        </div>
+
+        </br></br>
+
+        <div id="whois">
+
+        </div>
+    </div>
+</body>
+</html>
