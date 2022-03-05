@@ -1,0 +1,15 @@
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/DES
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/DES.deps.json
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/DES.runtimeconfig.json
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/DES.dll
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/ref/DES.dll
+/Users/gian/Desktop/secure coding/DES/bin/Debug/net6.0/DES.pdb
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.csproj.AssemblyReference.cache
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.GeneratedMSBuildEditorConfig.editorconfig
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.AssemblyInfoInputs.cache
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.AssemblyInfo.cs
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.csproj.CoreCompileInputs.cache
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.dll
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/ref/DES.dll
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.pdb
+/Users/gian/Desktop/secure coding/DES/obj/Debug/net6.0/DES.genruntimeconfig.cache

@@ -1,0 +1,15 @@
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.csproj.AssemblyReference.cache
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.GeneratedMSBuildEditorConfig.editorconfig
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.AssemblyInfoInputs.cache
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.AssemblyInfo.cs
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.csproj.CoreCompileInputs.cache
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/RSA
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/RSA.deps.json
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/RSA.runtimeconfig.json
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/RSA.dll
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/ref/RSA.dll
+/Users/gian/Desktop/secure coding/RSA/bin/Debug/net6.0/RSA.pdb
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.dll
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/ref/RSA.dll
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.pdb
+/Users/gian/Desktop/secure coding/RSA/obj/Debug/net6.0/RSA.genruntimeconfig.cache
