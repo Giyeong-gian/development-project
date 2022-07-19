@@ -1,0 +1,66 @@
+create table '주문테이블'(
+	'주문번호' varchar(16) not null,
+	'고객번호' varchar(16) not null,
+	‘주문일’ varchar(8) not null,
+	‘주문가격’ decimal(15,2) not null,
+	‘배송도시’ varchar(256),
+	‘배송완료일’ varchar(8),
+	‘결제금액’ varchar(8),
+	‘할인금액’ decimal(15,2) not null,
+	‘적립포인트’ decimal(15,2) not null,
+	primary key (‘주문번호’)
+)
+
+desc '주문테이블';
+
+alter table '주문테이블' change '배송도시' ‘배송도시코드’ int;
+
+alter table '주문테이블' add foreign key  (‘배송도시코드’) references ‘도시코드테이블’(code);
+
+alter table '주문테이블' drop foreign key [제약조건 이름];
+
+CREATE TABLE employees -- 사원 테이블
+(
+UID INT NOT NULL,
+PRIMARY KEY(UID)
+);
+CREATE TABLE salaries -- 급여 테이블
+(
+emp_no INT NOT NULL,
+salary INT NOT NULL,
+from_date DATE NOT NULL,
+to_date DATE,
+FOREIGN KEY(emp_no) REFERENCES employees (UID) ON DELETE CASCADE,
+PRIMARY KEY(emp_no, from_date)
+);
+
+
+INSERT INTO employees (UID) VALUES (1002);
+INSERT INTO salaries (emp_no, salary, from_date) VALUES (1002, 40000000, '2017-07-01');
+INSERT INTO salaries VALUES (1002, 4000000, '2017-08-01', NULL);
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES
+(1002, 2000000, '2012-07-01', '2013-06-30'),
+(1002, 3000000, '2013-07-01', '2014-06-30'),
+(1002, 4000000, '2014-07-01', '2015-06-30');
+INSERT INTO salaries VALUES
+(1002, 2000000, '2012-07-01', '2013-06-30'),
+(1002, 3000000, '2013-07-01', '2014-06-30'),
+(1002, 4000000, '2014-07-01', '2015-06-30');
+
+SELECT * FROM salaries;
+SELECT * FROM salaries WHERE emp_no = 1002;
+SELECT emp_no, salary FROM salaries WHERE emp_no = 1002;
+SELECT * FROM salaries WHERE from_date = (SELECT MAX(from_date) FROM salaries);
+SELECT * FROM salaries ORDER BY from_date DESC LIMIT 1;
+UPDATE salaries SET salary = 1100000 WHERE emp_no = 1002 AND from_date ='2014-07-01';
+DELETE FROM salaries WHERE emp_no = 1002;
+
+
+CREATE USER SUPER@localhost IDENTIFIED BY 'password';
+SHOW GRANTS FOR SUPER@localhost;
+DROP user super@localhost;
+GRANT ALL ON *.* TO ‘super’@’localhost’ WITH GRANT OPTION;
+GRANT SELECT, UPDATE ON biz.* TO super;
+SELECT @@AUTOCOMMIT;
+SET AUTOCOMMIT = TRUE; 
+SET AUTOCOMMIT = FALSE; 
