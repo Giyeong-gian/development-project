@@ -1,0 +1,15 @@
+CREATE OR REPLACE FUNCTION GET_AGE
+(V_BIRTH_DATE IN CHAR(8))
+IS
+BEGIN
+V_CURRENT_YEAR CHAR(4); -- 현재 연도
+V_BIRTH_YEAR CHAR(4); -- 생년
+V_AGE NUMBER; -- 나이
+SELECT TO_CHAR(SYSDATE,'YYYY') -- 현재 일자에서 년도만 추출
+, SUBSTR(V_BIRTH_DATE,1,4) -- 생년월일에서 앞 4자리 추출
+INTO V_CURRENT_YEAR -- 현재 년도(4자리)
+, V_BIRTH_YEAR -- 생년월일 년도(4자리)
+FROM DUAL ;
+SET AGE = TO_NUMBER(V_CURRENT_YEAR) - TO_NUMBER(V_BIRTH_YEAR) + 1; -- 현재 연도와 생년의 차에 1을 더함
+RETURN AGE; -- 나이를 반환
+END;
