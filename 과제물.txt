@@ -1,0 +1,196 @@
+DDL
+create table '주문테이블'(
+	'주문번호' varchar(16) not null,
+	'고객번호' varchar(16) not null,
+	‘주문일’ varchar(8) not null,
+	‘주문가격’ decimal(15,2) not null,
+	‘배송도시’ varchar(256),
+	‘배송완료일’ varchar(8),
+	‘결제금액’ varchar(8),
+	‘할인금액’ decimal(15,2) not null,
+	‘적립포인트’ decimal(15,2) not null,
+	primary key (‘주문번호’)
+)
+
+desc '주문테이블';
+
+alter table '주문테이블' change '배송도시' ‘배송도시코드’ int;
+
+alter table '주문테이블' add foreign key  (‘배송도시코드’) references ‘도시코드테이블’(code);
+
+alter table '주문테이블' drop foreign key [제약조건 이름];
+
+CREATE TABLE employees -- 사원 테이블
+(
+UID INT NOT NULL,
+PRIMARY KEY(UID)
+);
+CREATE TABLE salaries -- 급여 테이블
+(
+emp_no INT NOT NULL,
+salary INT NOT NULL,
+from_date DATE NOT NULL,
+to_date DATE,
+FOREIGN KEY(emp_no) REFERENCES employees (UID) ON DELETE CASCADE,
+PRIMARY KEY(emp_no, from_date)
+);
+
+
+DML
+INSERT INTO employees (UID) VALUES (1002);
+INSERT INTO salaries (emp_no, salary, from_date) VALUES (1002, 40000000, '2017-07-01');
+INSERT INTO salaries VALUES (1002, 4000000, '2017-08-01', NULL);
+INSERT INTO salaries (emp_no, salary, from_date, to_date) VALUES
+(1002, 2000000, '2012-07-01', '2013-06-30'),
+(1002, 3000000, '2013-07-01', '2014-06-30'),
+(1002, 4000000, '2014-07-01', '2015-06-30');
+INSERT INTO salaries VALUES
+(1002, 2000000, '2012-07-01', '2013-06-30'),
+(1002, 3000000, '2013-07-01', '2014-06-30'),
+(1002, 4000000, '2014-07-01', '2015-06-30');
+
+SELECT * FROM salaries;
+SELECT * FROM salaries WHERE emp_no = 1002;
+SELECT emp_no, salary FROM salaries WHERE emp_no = 1002;
+SELECT * FROM salaries WHERE from_date = (SELECT MAX(from_date) FROM salaries);
+SELECT * FROM salaries ORDER BY from_date DESC LIMIT 1;
+UPDATE salaries SET salary = 1100000 WHERE emp_no = 1002 AND from_date ='2014-07-01';
+DELETE FROM salaries WHERE emp_no = 1002;
+
+
+DCL
+CREATE USER SUPER@localhost IDENTIFIED BY 'password';
+SHOW GRANTS FOR SUPER@localhost;
+DROP user super@localhost;
+GRANT ALL ON *.* TO ‘super’@’localhost’ WITH GRANT OPTION;
+GRANT SELECT, UPDATE ON biz.* TO super;
+SELECT @@AUTOCOMMIT;
+SET AUTOCOMMIT = TRUE; 
+SET AUTOCOMMIT = FALSE; 
+
+
+데이터 사전 검색
+SELECT * FROM CHARACTER_SETS;
+SELECT * FROM COLLATIONS;
+SELECT * FROM COLUMNS;
+SELECT * FROM COLUMN_PRIVILEGES;
+SELECT * FROM KEY_COLUMN_USAGE;
+SELECT * FROM ROUTINES;
+SELECT * FROM CHARACTER_SETS;
+SELECT * FROM SCHEMATA;
+SELECT * FROM TABLES;
+SELECT * FROM TABLE_CONSTRAINTS;
+SELECT * FROM TRIGGERS;
+SELECT * FROM VIEWS;
+
+인덱스
+CREATE INDEX idx배송도시 on 주문테이블(배송도시);
+SHOW INDEX FROM 주문테이블;
+CREATE UNIQUE INDEX idx고객번호 on 주문테이블 (고객번호);
+ALTER TABLE 주문테이블 DROP INDEX idx배송도시;
+ALTER TABLE 주문테이블 DROP INDEX idx주문일포인트;
+ALTER TABLE 주문테이블 DROP INDEX idx고객번호;
+
+
+뷰
+CREATE VIEW CHECK_LOGIN_VIEW AS select UID, PASSWORD from EMP;
+SELECT UID FROM CHECK_LOGIN_VIEW WHERE UID=’user’, PASSWORD=’pw’;
+CREATE VIEW CHECK_WORKPLACE_VIEW AS select UID, NAME, WORKPLACE from EMP WHERE WORKPLACE IN (‘서울’,‘부산’);
+CREATE VIEW CHECK_WORKDAY_VIEW (UID, NAME, JOINDAY, WORKDAYS) AS select UID, NAME, JOINDAY, to_date( NOW() - Date(JOINDAY) ) from EMP;
+CREATE VIEW PARTIAL_VIEW (NAME, POSITION, WORKPLACE) AS select NAME, POSITION, WORKPLACE) from EMP;
+INSERT INTO PARTIAL_VIEW VALUES (‘도길동’. ‘대리’, ‘부산’);
+UPDATE PARTIAL_VIEW SET NAME=’도길동‘, POSITION=’대리‘, WORKPLACE=’부산‘;
+UPDATE CHECK_WORKPLACE_VIEW SET NAME=’도길동‘, WORKPLACE=’부산‘ WHERE  UID = 1090;
+DROP VIEW CHECK_LOGIN_VIEW;
+DROP VIEW CHECK_WORKPLACE_VIEW; 
+DROP VIEW CHECK_WORKDAY_VIEW;
+
+다중테이블 검색
+SELECT productCode, productName, textDescription FROM products t1, productlines t2
+WHERE t1.productLine = t2.productLine;
+SELECT productCode, productName, textDescription
+FROM product t1
+INNER JOIN product t2 ON t1.productLine = t2.productLine;
+SELECT productCode, productName, textDescription
+FROM products t1
+INNER JOIN productlines t2 USING (productLine);
+SELECT productCode, productName, textDescription FROM product t1
+NATURAL JOIN productlines t2;
+SELECT productCode, productName, textDescription FROM products t1 CROSS JOIN productlines t2;
+SELECT productCode, productName, textDescription FROM products t1
+INNER JOIN productlines t2;
+SELECT prouctCode, productName, textDescription
+FROM products t1
+LEFT OUTER JOIN productlines t2 ON t1.productLine = t2.productLine;
+SELECT productCode, productName
+FROM products
+WHERE productLine NOT IN (SELECT distinct productLine FROM productlines);
+SELECT productLine, textDescription
+FROM productlines
+WHERE productLine NOT IN (SELECT productLine FROM products);
+SELECT productname, buyprice
+FROM products p1
+WHERE buyprice > (SELECT AVG(buyprice) FROM products WHERE productline = p1.productline);
+SELECT coulum1, column2 UNION [DISTICT | ALL] SELECT column1, column2
+SELECT productcode, productname FROM products
+UNION
+SELECT productLine, textDescription FROM productlines;
+SELECT productcode id, productname name FROM products
+UNION
+SELECT productLine id, textDescription name FROM productlines;
+
+프로시저
+CREATE OR REPLACE PROCEDURE SALES_CLOSNG (V_CLOSING_DATE IN CHAR(8))
+IS
+BEGIN
+V_SALES_TOT_AMT NUMBERS; SELECT SUM(SALES_AMT) INTO V_SALES_TOT_AMT
+FROM SALES_LIST_T
+WHERE SALES_DATE = V_CLOSING_DATE;
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+SET V_SALES_TOT_AMT = 0;
+INSERT INTO
+SALES_CLOSED_T
+(SALES_DATE, SALES_TOT_AMT) VALUES(V_CLOSING_DATE, V_DALES_TOT_AMT);
+EXCEPTION
+WHEN NO_DATA_FOUND THEN
+SET SALES_TOT_AMT = 0;
+COMMIT; END;
+
+
+사용자 정의함수
+CREATE OR REPLACE FUNCTION GET_AGE
+(V_BIRTH_DATE IN CHAR(8))
+IS
+BEGIN
+V_CURRENT_YEAR CHAR(4); -- 현재 연도
+V_BIRTH_YEAR CHAR(4); -- 생년
+V_AGE NUMBER; -- 나이
+SELECT TO_CHAR(SYSDATE,'YYYY') -- 현재 일자에서 년도만 추출
+, SUBSTR(V_BIRTH_DATE,1,4) -- 생년월일에서 앞 4자리 추출
+INTO V_CURRENT_YEAR -- 현재 년도(4자리)
+, V_BIRTH_YEAR -- 생년월일 년도(4자리)
+FROM DUAL ;
+SET AGE = TO_NUMBER(V_CURRENT_YEAR) - TO_NUMBER(V_BIRTH_YEAR) + 1; -- 현재 연도와 생년의 차에 1을 더함
+RETURN AGE; -- 나이를 반환
+END;
+
+
+트리거
+
+CREATE OR REPLACE TRIGGER PUT_EMPLOYEE_INFO_HISTORY -- 직원 정보 이력 입력 AFTER UPDATE -- 수정 후
+ON EMPLOYEE_INFO_T -- 직원 정보 테이블 대상
+FOR EACH ROW -- ROW 단위 건별
+BEGIN
+INSERT INTO EMPLOYEE_INFO_H -- 직원 정보 이력 테이블 ( EMPLOYEE_ID
+, SEQ_VAL
+, EMPLOYEE_NAME
+, EMPLOYEE_DEPT
+, EMPLOYEE_ADDRESS
+, EMPLOYEE_CP_NO )
+( :OLD.EMPLOYEE_ID --기존 ID
+, SEQ_VAL.NEXT_VAL --이력 순번
+, :NEW.EMPLOYEE_NAME --신규 성명
+, :NEW.EMPLOYEE_DEPT --신규 부서
+, :NEW.EMPLOYEE_ADDRESS --신규 주소
+, :NEW.EMPLOYEE_CP_NO --신규 핸드폰 번호 );
